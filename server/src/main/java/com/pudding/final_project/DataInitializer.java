@@ -75,7 +75,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item biscuit = new Item();
         biscuit.setName("Biscuit");
-        biscuit.setPrice(4.99);
+        biscuit.setPrice(1.99);
         biscuit.setStock(20);
         biscuit.setImagePath("/images/biscuit.jpg");
         biscuit.setCategory("Food");
@@ -91,7 +91,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item chicken = new Item();
         chicken.setName("Chicken");
-        chicken.setPrice(12.99);
+        chicken.setPrice(18.99);
         chicken.setStock(8);
         chicken.setImagePath("/images/chicken.jpg");
         chicken.setCategory("Food");
@@ -99,15 +99,15 @@ public class DataInitializer implements CommandLineRunner {
 
         Item tart = new Item();
         tart.setName("Tart");
-        tart.setPrice(6.99);
-        tart.setStock(12);
+        tart.setPrice(3.99);
+        tart.setStock(8);
         tart.setImagePath("/images/tart.jpg");
         tart.setCategory("Food");
         itemService.createItem(tart);
 
         Item sukiyaki = new Item();
         sukiyaki.setName("Sukiyaki");
-        sukiyaki.setPrice(15.99);
+        sukiyaki.setPrice(35.99);
         sukiyaki.setStock(5);
         sukiyaki.setImagePath("/images/sukiyaki.jpg");
         sukiyaki.setCategory("Food");
@@ -115,7 +115,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item bagel = new Item();
         bagel.setName("Bagel");
-        bagel.setPrice(3.99);
+        bagel.setPrice(12.99);
         bagel.setStock(25);
         bagel.setImagePath("/images/bagel.jpg");
         bagel.setCategory("Food");
@@ -123,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item milktea = new Item();
         milktea.setName("Milk Tea");
-        milktea.setPrice(5.99);
+        milktea.setPrice(6.99);
         milktea.setStock(15);
         milktea.setImagePath("/images/milktea.jpg");
         milktea.setCategory("Food");
@@ -132,7 +132,7 @@ public class DataInitializer implements CommandLineRunner {
         // Non-food items
         Item plush = new Item();
         plush.setName("Plush");
-        plush.setPrice(19.99);
+        plush.setPrice(69.99);
         plush.setStock(5);
         plush.setImagePath("/images/plush.jpg");
         plush.setCategory("Toys");
@@ -140,7 +140,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item drawing = new Item();
         drawing.setName("Drawing");
-        drawing.setPrice(9.99);
+        drawing.setPrice(99.99);
         drawing.setStock(1);
         drawing.setImagePath("/images/drawing.jpg");
         drawing.setCategory("Art");
@@ -148,7 +148,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Item cup = new Item();
         cup.setName("Cup");
-        cup.setPrice(7.99);
+        cup.setPrice(9.99);
         cup.setStock(10);
         cup.setImagePath("/images/cup.jpg");
         cup.setCategory("Home");
