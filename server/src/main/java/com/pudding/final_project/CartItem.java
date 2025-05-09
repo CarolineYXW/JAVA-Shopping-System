@@ -1,14 +1,11 @@
 package com.pudding.final_project;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.pudding.final_project.entity.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
-public class CartItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class CartItem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "cart_id")
     @JsonBackReference
@@ -22,8 +19,6 @@ public class CartItem {
     private double price;
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public Cart getCart() { return cart; }
     public void setCart(Cart cart) { this.cart = cart; }
     public Item getItem() { return item; }

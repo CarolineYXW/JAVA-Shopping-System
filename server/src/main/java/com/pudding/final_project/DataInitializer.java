@@ -24,6 +24,16 @@ public class DataInitializer implements CommandLineRunner {
         this.orderService = orderService;
     }
 
+    private Item createItem(String name, double price, int stock, String imagePath, String category) {
+        Item item = new Item();
+        item.setName(name);
+        item.setPrice(price);
+        item.setStock(stock);
+        item.setImagePath(imagePath);
+        item.setCategory(category);
+        return itemService.save(item);
+    }
+
     @Override
     @Transactional
     public void run(String... args) {
@@ -44,115 +54,28 @@ public class DataInitializer implements CommandLineRunner {
 
         // Clear all data in the correct order to respect foreign key constraints
         logger.info("Clearing all data...");
-        
-        // 1. Clear cart items first
-        logger.info("Clearing cart items...");
         cartService.clearAllCarts();
-        
-        // 2. Clear order items
-        logger.info("Clearing order items...");
         orderItemService.deleteAll();
-        
-        // 3. Clear orders
-        logger.info("Clearing orders...");
         orderService.deleteAll();
-        
-        // 4. Clear items
-        logger.info("Clearing items...");
         itemService.deleteAll();
 
         // Initialize new items
         logger.info("Initializing new items...");
         
         // Food items
-        Item crab = new Item();
-        crab.setName("Crab");
-        crab.setPrice(29.99);
-        crab.setStock(10);
-        crab.setImagePath("/images/crab.jpg");
-        crab.setCategory("Food");
-        itemService.createItem(crab);
-
-        Item biscuit = new Item();
-        biscuit.setName("Biscuit");
-        biscuit.setPrice(1.99);
-        biscuit.setStock(20);
-        biscuit.setImagePath("/images/biscuit.jpg");
-        biscuit.setCategory("Food");
-        itemService.createItem(biscuit);
-
-        Item corn = new Item();
-        corn.setName("Corn");
-        corn.setPrice(2.99);
-        corn.setStock(15);
-        corn.setImagePath("/images/corn.jpg");
-        corn.setCategory("Food");
-        itemService.createItem(corn);
-
-        Item chicken = new Item();
-        chicken.setName("Chicken");
-        chicken.setPrice(18.99);
-        chicken.setStock(8);
-        chicken.setImagePath("/images/chicken.jpg");
-        chicken.setCategory("Food");
-        itemService.createItem(chicken);
-
-        Item tart = new Item();
-        tart.setName("Tart");
-        tart.setPrice(3.99);
-        tart.setStock(8);
-        tart.setImagePath("/images/tart.jpg");
-        tart.setCategory("Food");
-        itemService.createItem(tart);
-
-        Item sukiyaki = new Item();
-        sukiyaki.setName("Sukiyaki");
-        sukiyaki.setPrice(35.99);
-        sukiyaki.setStock(5);
-        sukiyaki.setImagePath("/images/sukiyaki.jpg");
-        sukiyaki.setCategory("Food");
-        itemService.createItem(sukiyaki);
-
-        Item bagel = new Item();
-        bagel.setName("Bagel");
-        bagel.setPrice(12.99);
-        bagel.setStock(25);
-        bagel.setImagePath("/images/bagel.jpg");
-        bagel.setCategory("Food");
-        itemService.createItem(bagel);
-
-        Item milktea = new Item();
-        milktea.setName("Milk Tea");
-        milktea.setPrice(6.99);
-        milktea.setStock(15);
-        milktea.setImagePath("/images/milktea.jpg");
-        milktea.setCategory("Food");
-        itemService.createItem(milktea);
+        createItem("Crab", 29.99, 10, "/images/crab.jpg", "Food");
+        createItem("Biscuit", 1.99, 20, "/images/biscuit.jpg", "Food");
+        createItem("Corn", 2.99, 15, "/images/corn.jpg", "Food");
+        createItem("Chicken", 18.99, 8, "/images/chicken.jpg", "Food");
+        createItem("Tart", 3.99, 8, "/images/tart.jpg", "Food");
+        createItem("Sukiyaki", 35.99, 5, "/images/sukiyaki.jpg", "Food");
+        createItem("Bagel", 15.99, 5, "/images/bagel.jpg", "Food");
+        createItem("Milk Tea", 6.99, 15, "/images/milktea.jpg", "Food");
 
         // Non-food items
-        Item plush = new Item();
-        plush.setName("Plush");
-        plush.setPrice(69.99);
-        plush.setStock(5);
-        plush.setImagePath("/images/plush.jpg");
-        plush.setCategory("Toys");
-        itemService.createItem(plush);
-
-        Item drawing = new Item();
-        drawing.setName("Drawing");
-        drawing.setPrice(99.99);
-        drawing.setStock(1);
-        drawing.setImagePath("/images/drawing.jpg");
-        drawing.setCategory("Art");
-        itemService.createItem(drawing);
-
-        Item cup = new Item();
-        cup.setName("Cup");
-        cup.setPrice(9.99);
-        cup.setStock(10);
-        cup.setImagePath("/images/cup.jpg");
-        cup.setCategory("Home");
-        itemService.createItem(cup);
+        createItem("Plush", 69.99, 5, "/images/plush.jpg", "Toys");
+        createItem("Drawing", 99.99, 1, "/images/drawing.jpg", "Art");
+        createItem("Cup", 10.99, 10, "/images/cup.jpg", "Home");
 
         logger.info("Items created successfully");
     }
