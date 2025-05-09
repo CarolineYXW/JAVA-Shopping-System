@@ -32,13 +32,13 @@ public class DataInitializer implements CommandLineRunner {
         // Initialize sample users if none exist
         if (userService.getAllUsers().isEmpty()) {
             User user1 = new User();
-            user1.setUsername("user1");
-            user1.setPassword("password1");
+            user1.setUsername("testuser1");
+            user1.setPassword("testpass1");
             userService.createUser(user1);
 
             User user2 = new User();
-            user2.setUsername("user2");
-            user2.setPassword("password2");
+            user2.setUsername("testuser2");
+            user2.setPassword("testpass2");
             userService.createUser(user2);
         }
 
