@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order History - Shopping System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Shopping System</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/cart">Cart</a>
+                <a class="nav-link active" href="/order-history">Order History</a>
+                <div id="userSection">
+                    <span id="usernameDisplay" class="nav-link text-light" style="display: none;"></span>
+                    <a class="nav-link" href="/login" id="loginLink">Login</a>
+                    <a class="nav-link" href="/register" id="registerLink">Register</a>
+                    <a class="nav-link" href="#" id="logoutLink" style="display: none;" onclick="logout()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Order History</h1>
+            <a href="/" class="btn btn-primary">Continue Shopping</a>
+        </div>
+        <div id="orders" class="mt-4">
+            <!-- Orders will be loaded here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check login status when page loads
+        window.onload = function() {
+            checkLoginStatus();
+            loadOrders();
+        };
+
+        function checkLoginStatus() {
+            const userId = localStorage.getItem('userId');
+            const username = localStorage.getItem('username');
+            
+            if (userId && username) {
+                document.getElementById('usernameDisplay').textContent = `Welcome, ${username}`;
+                document.getElementById('usernameDisplay').style.display = 'inline';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('registerLink').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'inline';
+            } else {
+                document.getElementById('usernameDisplay').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'inline';
+                document.getElementById('registerLink').style.display = 'inline';
+                document.getElementById('logoutLink').style.display = 'none';
+                window.location.href = '/login';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            window.location.href = '/';
+        }
+
+        function loadOrders() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                window.location.href = '/login';
+                return;
+            }
+
+            fetch(`/api/orders/user/${userId}`)
+            .then(response => response.json())
+            .then(response => {
+                if (!response.success) {
+                    throw new Error(response.message || 'Error loading orders');
+                }
+                const orders = response.orders;
+                const ordersContainer = document.getElementById('orders');
+                ordersContainer.innerHTML = '';
+
+                if (!orders || orders.length === 0) {
+                    ordersContainer.innerHTML = '<p class="text-center">No orders found</p>';
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const orderDate = new Date(order.orderDate).toLocaleString();
+                    const statusClass = order.status === 'CANCELED' ? 'text-danger' : 
+                                      order.status === 'COMPLETED' ? 'text-success' : 'text-warning';
+                    
+                    let itemsHtml = '';
+                    order.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="row mb-2">
+                                <div class="col-md-6">${item.item.name}</div>
+                                <div class="col-md-2">${item.quantity}</div>
+                                <div class="col-md-2">$${item.priceAtOrder.toFixed(2)}</div>
+                                <div class="col-md-2">$${(item.priceAtOrder * item.quantity).toFixed(2)}</div>
+                            </div>
+                        `;
+                    });
+
+                    ordersContainer.innerHTML += `
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="mb-0">Order #${order.id}</h5>
+                                        <small class="text-muted">${orderDate}</small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="badge ${statusClass}">${order.status}</span>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        ${order.status === 'PENDING' ? 
+                                            `<button class="btn btn-danger btn-sm" onclick="cancelOrder(${order.id})">Cancel</button>` : 
+                                            ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6"><strong>Item</strong></div>
+                                    <div class="col-md-2"><strong>Quantity</strong></div>
+                                    <div class="col-md-2"><strong>Price</strong></div>
+                                    <div class="col-md-2"><strong>Total</strong></div>
+                                </div>
+                                ${itemsHtml}
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-10 text-end"><strong>Total Amount:</strong></div>
+                                    <div class="col-md-2"><strong>$${order.totalAmount.toFixed(2)}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading orders: ' + error.message);
+            });
+        }
+
+        function cancelOrder(orderId) {
+            if (!confirm('Are you sure you want to cancel this order?')) {
+                return;
+            }
+
+            fetch(`/api/orders/cancel/${orderId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    loadOrders();
+                } else {
+                    alert(data.message || 'Error canceling order');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error canceling order');
+            });
+        }
+    </script>
+</body>
+</html> 
